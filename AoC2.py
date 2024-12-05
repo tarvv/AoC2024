@@ -1,4 +1,4 @@
-#Advent of Code day 1
+#Advent of Code day 2
 fname = 'AoC2.txt'  #input data
 inData = []
 with open(fname) as f:
@@ -7,53 +7,42 @@ with open(fname) as f:
         for v in line.split():
             repList.append(int(v))
         inData.append(repList)
-        
+
+
+def isSafe(repLst):
+    #check unique
+    if len(set(repLst)) != len(repLst):
+        return False
+    #check sorted
+    if sorted(repLst) != repLst and sorted(repLst, reverse=True) != repLst:
+        return False
+    #check each increment is less than 4
+    for i in range(1, len(repLst)):
+        if abs(repLst[i] - repLst[i-1]) > 3:
+            return False
+    return True
+    
+
 #Part 1
 p1safe_cnt = 0
 for rep in inData:
-    unsafe = 0
-    #check unique
-    if len(set(rep)) != len(rep):
-        continue
-    #check sorted
-    if sorted(rep) != rep and sorted(rep, reverse=True) != rep:
-        continue
-    #check each increment is less than 4
-    for i in range(1, len(rep)):
-        if abs(rep[i] - rep[i-1]) > 3:
-            unsafe += 1
-            break
-    if not unsafe:
+    if isSafe(rep):
         p1safe_cnt += 1
         
-        
 print(p1safe_cnt) #411
+
 
 #Part 2
 p2safe_cnt = 0
 for rep in inData:
-    remFlag = 0
-    unsafe = 0
-    #check unique
-    unqDif = len(rep) - len(set(rep))
-    if unqDif > 1:  #too many to remove
-        continue
-    elif unqDif == 1:   #check the rest with a removed val
-        rep = list(set(rep))
-        remFlag += 1
-        
-        
-        
-    #working from here    
-    #check sorted
-    if sorted(rep) != rep and sorted(rep, reverse=True) != rep:
-        continue
-    #check each increment is less than 4
-    for i in range(1, len(rep)):
-        if abs(rep[i] - rep[i-1]) > 3:
-            unsafe += 1
-            break
-    if not unsafe:
-        p1safe_cnt += 1
+    if isSafe(rep):
+        p2safe_cnt += 1
+    else:
+        for i in range(len(rep)):
+            tmpLst = rep[:]
+            del tmpLst[i]
+            if isSafe(tmpLst):
+                p2safe_cnt += 1
+                break
 
-print(p2safe_cnt) #481 too high
+print(p2safe_cnt) #465
